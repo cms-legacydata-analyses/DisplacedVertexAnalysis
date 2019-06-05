@@ -39,25 +39,8 @@ process.source = cms.Source("PoolSource",
 #'file:simu/recosimu7.root',
 #'file:simu/recosimu8.root',
 #'file:simu/recosimu9.root'
-'file:lee_wick_5/lw5_1.root',
-'file:lee_wick_5/lw5_2.root',
-'file:lee_wick_5/lw5_3.root',
-'file:lee_wick_5/lw5_4.root',
-'file:lee_wick_5/lw5_5.root',
-'file:lee_wick_5/lw5_6.root',
-'file:lee_wick_5/lw5_7.root',
-'file:lee_wick_5/lw5_8.root',
-'file:lee_wick_5/lw5_9.root',
-'file:lee_wick_5/lw5_10.root',
-'file:lee_wick_5/lw5_11.root',
-'file:lee_wick_5/lw5_12.root',
-'file:lee_wick_5/lw5_13.root',
-'file:lee_wick_5/lw5_14.root',
-'file:lee_wick_5/lw5_15.root',
-'file:lee_wick_5/lw5_16.root'
 
-
-
+'root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/DYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/0AA1F8B0-62BD-E311-87E9-0025905A60CA.root'
 
 
    )

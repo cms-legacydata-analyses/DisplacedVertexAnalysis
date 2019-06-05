@@ -469,7 +469,7 @@ std::string toFind[3] = {"HLT_DoublePhoton43_HEVT","HLT_DoublePhoton33_HEVT", "H
    
 int trigPathSize = trigNames.size();
 int triggerFound=9;
-for(int j = 0; j < 2; j++){
+for(int j = 0; j < 3; j++){
 for (unsigned int i = 0; i< trigNames.size(); i++)
 {
 	

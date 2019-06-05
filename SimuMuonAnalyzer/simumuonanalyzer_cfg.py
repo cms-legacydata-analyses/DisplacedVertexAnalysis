@@ -24,8 +24,7 @@ process.source = cms.Source("PoolSource",
     duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
     fileNames = cms.untracked.vstring(
 
-'file:simu/recosimu1.root'
-
+'root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/DYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/0A37050B-93BD-E311-B3F5-0025905A6136.root'
    )
 )
 
