@@ -94,7 +94,7 @@ class SimuMuonAnalyzer2 : public edm::EDAnalyzer {
    //   TTree * mtree;
       TFile * mfile;
      // TH1F * h_;
-      TH2F *h_ptVsErr;
+     
       TH1F * h_invMass;
       TH1F * h_invMassLoose;
        TH1F * h_invMassPt250;
@@ -455,6 +455,7 @@ if ( beamSpotHandle.isValid() )
  
 std::string pathName = "none";
 std::string toFind[2] = {"HLT_L2DoubleMu23_NoVertex_v9", "HLT_L2DoubleMu30_NoVertex"};
+cout<<"458"<<endl;
 
    
 int trigPathSize = trigNames.size();
@@ -494,7 +495,7 @@ else
 }
 
 //cout<<filterName<<endl;
-
+cout<<"497"<<endl;
 
 bool passTrig;
 int trigIndex = trigNames.triggerIndex(pathName);
@@ -533,7 +534,7 @@ trigger::size_type e_filterIndex = trigEvent->filterIndex(edm::InputTag(e_filter
       //const trigger::TriggerObjectCollection & e_trigObjColl(trigEvent->getObjects());
      
      
-  
+cout<<"536"<<endl;
 if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
 {
  int j = 0;
@@ -572,7 +573,7 @@ if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
 }
 
 
-
+cout<<"575"<<endl;
 int  i =0;
 for(TrackCollection::const_iterator itTrack1 = tracks->begin();
        itTrack1 != tracks->end();                      
@@ -598,7 +599,7 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 					//do the conversion:
 					std::vector<reco::TransientTrack> t_tks = (*theB).build(tks);
 					
-				   
+				    cout<<"600"<<endl;
 				   std::vector<reco::TransientTrack> trackVec;
                     
 				   if ( (int)t_tks.size()>2){
@@ -607,12 +608,14 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 					
 
 				   trackVec.push_back(t_tks[j]); 
+				    cout<<"610"<<endl;
 				   TransientVertex myVertex = fitter.vertex(trackVec);
 				  
-		 
+		 cout<<"612"<<endl;
 				  
               if (myVertex.isValid() && myVertex.normalisedChiSquared() < 5)
 					 {
+				cout<<"618"<<endl;		 
 			    double secVert_x =(double)myVertex.position().x();
 			   double secVert_y =(double)myVertex.position().y();
 			   //cout<<secVert_x<<secVert_y<<endl;
@@ -623,7 +626,7 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 			   double px = itTrack1->px() + itTrack2->px();
 			   double py = itTrack1->py() + itTrack2->py();
 			   double pt = sqrt(px*px + py*py);
-			   
+			   cout<<"628"<<endl;
 			    bool IPC = impactParameterCut(itTrack1, itTrack2, beamSpot);
 					    //double IPC = impactParameterCut(itTrack1, itTrack2, beamSpot);
 			    double secVertErrx = myVertex.positionError().cxx();
@@ -633,14 +636,22 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 				double tdl = sqrt(tdl_x*tdl_x + tdl_y*tdl_y);
 				double tdl_errx = secVertErrx + vertex_xError;
 				double tdl_erry = secVertErry + vertex_yError;
+				cout<<"639"<<endl;
 						//double tdl_err = sqrt(tdl_errx*tdl_errx + tdl_erry*tdl_erry);
 				double difx = (secVert_x)/(sqrt((secVert_x*secVert_x)+(secVert_y*secVert_y)));
+				cout<<"1"<<endl;
 				double dify = (secVert_y)/(sqrt((secVert_x*secVert_x)+(secVert_y*secVert_y)));
+				cout<<"2"<<endl;
 				double tot_variance = difx*difx*tdl_errx +dify*dify*tdl_erry; 
+				cout<<"3"<<endl;
 				double tdl_err = sqrt(tot_variance);
+				cout<<"4"<<endl;
 				double invariantMass;
-				h_ptVsErr->Fill(pt,tdl_err);
+				cout<<"5 "<< pt << tdl_err<< endl;
+				
+				cout<<"6"<<endl;
 				cout<<"Err :"<<tdl_err<<endl;
+				 cout<<"643"<<endl;
 			  // cout<<conePt_var<<cosAlpha<<vertex_x<<vertex_y<<theta<<endl;
 			 /* cout<<"theta: "<<theta*180/3.1415<<endl;
 			  cout<<"disp "<<secVert_x -beamX<<endl;
@@ -835,7 +846,7 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 				if ((-dot) <-20.0){h_invMassDPCutLw_noErr200->Fill(invariantMass);}
 				
 				
-			  
+			   cout<<"839"<<endl;
 			  h_dotP->Fill(dot);
 			  h_dotPLw->Fill(-dot);
 			  h_dotP_err->Fill(dot/tdl_err);
@@ -880,6 +891,7 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 						 
 				    
 				 }
+				  cout<<"885"<<endl;
 				 if ((conePt_var < 4 && cosAlpha > -0.95 && (theta >3.1514- 0.2 )))
 					
 					{
@@ -908,7 +920,7 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 					   if (theta > 3.1514 -0.06){h_invMass_lwCut7->Fill(invariantMass);}
 					   if (theta > 3.1514 -0.04){h_invMass_lwCut8->Fill(invariantMass);}
 					   if (theta > 3.1514 -0.02){h_invMass_lwCut9->Fill(invariantMass);}
-					  
+					   cout<<"914"<<endl;
 		    
 				   }
 			   
@@ -922,7 +934,7 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 i++;
 }
 
-
+cout<<"925"<<endl;
 
 //   Compare mathced tracks to see if they originated from the same vertex
 
