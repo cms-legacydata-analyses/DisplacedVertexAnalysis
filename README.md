@@ -20,4 +20,10 @@ scram b
 ```
 The analysis code is now ready to be run
 ### Running analysis
+The analysis code is divided into four modules, corresponding to the diferent options: Data, Mc, electron channel and muon channel. To run one of them, change into the corresponding directory and run the configuration file with `cmsRun` executable. For example if you whant to run Electron MC:
 
+```
+cd SimuElectronAnalyzer
+cmsRun simuelectronanalyzer_cfg.py
+```
+The output file will be named `simu_electron.root` (For the other cases: `muon.root`, `electron.root` and `simu_muon.root`).
