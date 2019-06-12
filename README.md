@@ -10,7 +10,14 @@ Within a terminal:
 ```
 cmsrel CMSSW_5_3_32
 cd CMSSW_5_3_32
-git clone 
+git clone git@github.com:cms-legacydata-analyses/DisplacedVertexAnalysis.git
 ```
+Next set up CMS environment and compile the code
+
+```
+cmsenv
+scram b
+```
+The analysis code is now ready to be run
 ### Running analysis
 
