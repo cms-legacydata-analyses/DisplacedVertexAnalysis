@@ -27,3 +27,5 @@ cd SimuElectronAnalyzer
 cmsRun simuelectronanalyzer_cfg.py
 ```
 The output file will be named `simu_electron.root` (For the other cases: `muon.root`, `electron.root` and `simu_muon.root`).
+## Creating Plots
+The ploting scripts are located under `CMSSW_5_3_32/src/()/Plots`
