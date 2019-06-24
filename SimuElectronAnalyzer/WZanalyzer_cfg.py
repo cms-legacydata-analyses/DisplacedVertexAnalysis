@@ -1,19 +1,27 @@
-from CRABClient.UserUtilities import config, getUsernameFromSiteDB
-config = config()
+import FWCore.ParameterSet.Config as cms
 
-config.General.requestName = 'WZ_analisis'
-config.General.workArea = 'crabWZ'
-config.General.transferOutputs = True
-config.General.transferLogs = False
-#config.JobType.scriptExe = 'myscript.sh'
-config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'simumuonanalyzer_cfg.py'
-config.JobType.maxJobRuntimeMin = 375
-#config.JobType.inputFiles = ['list.txt','pyScript.py']
-config.JobType.outputFiles = ['WZ.root']
-#config.Data.inputDataset = '/SingleElectron/Run2011A-12Oct2013-v1/AOD'
-#config.Data.inputDataset = '/EG/Run2010A-Apr21ReReco-v1/AOD'
-config.Data.userInputFiles = [ 'root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/WZJetsTo3LNu_TuneZ2_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/0013A453-7ABD-E311-AAC9-0025905A60F8.root',
+process = cms.Process("Demo")
+
+process.load("FWCore.MessageService.MessageLogger_cfi")
+
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+
+
+
+process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
+process.load("Configuration.Geometry.GeometryIdeal_cff")
+process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
+
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+
+#process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/FT_53_LV5_AN1_RUNA.db')
+process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/START53_LV6A1.db')
+#process.GlobalTag.globaltag = 'FT_53_LV5_AN1::All'
+process.GlobalTag.globaltag = 'START53_LV6A1::All'
+
+
+myfilelist = cms.untracked.vstring()
+myfilelist.extend( ['root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/WZJetsTo3LNu_TuneZ2_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/0013A453-7ABD-E311-AAC9-0025905A60F8.root',
 'root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/WZJetsTo3LNu_TuneZ2_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/00846A75-09BC-E311-9D9F-002618FDA279.root',
 'root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/WZJetsTo3LNu_TuneZ2_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/046B655D-F5BB-E311-B6A8-003048679214.root',
 'root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/WZJetsTo3LNu_TuneZ2_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/0EEE04BF-FDBB-E311-9E20-0025905A60E4.root',
@@ -85,14 +93,18 @@ config.Data.userInputFiles = [ 'root://eospublic.cern.ch//eos/opendata/cms/Monte
 'root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/WZJetsTo3LNu_TuneZ2_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/FA658368-E0BB-E311-A654-002590596484.root',
 'root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/WZJetsTo3LNu_TuneZ2_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/FA9EDC56-0ABC-E311-891A-0025905A6118.root',
 'root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/WZJetsTo3LNu_TuneZ2_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/FC4BD7B5-0BBC-E311-AAF2-0025905A60DE.root'
-]
-config.Data.publication = False
-#config.Data.userInputFiles = ['dummy.root']
-config.Data.inputDBS = 'global'
-config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 200
+] )
 
 
-config.Site.storageSite = 'T2_US_Nebraska'
-config.section_("Debug")
-#config.Debug.extraJDL = [ '+DESIRED_Sites="T3_CH_Opportunistic_opendata"','+JOB_CMSSite="T3_CH_Opportunistic_opendata"']
+process.source = cms.Source("PoolSource",    
+       fileNames = myfilelist
+    
+)
+
+process.demo = cms.EDAnalyzer('SimuElectronAnalyzer'
+    , tracks = cms.untracked.InputTag('generalTracks'),
+      outFile = cms.string("file:WW_electron.root")
+)
+
+
+process.p = cms.Path(process.demo)
