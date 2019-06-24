@@ -1,4 +1,4 @@
-# DisplacedVertexAnalysis
+# LongLivedNeutralParticlesAnalysis
 ## Description
 ## Requirements
 This analysis example is met to be run within  [CMS VM 2011](http://opendata.cern.ch/record/252 "CMS VM Image") and utilizes CMSSW_5_3_32.
@@ -10,7 +10,7 @@ Within a terminal:
 ```
 cmsrel CMSSW_5_3_32
 cd CMSSW_5_3_32/src
-git clone git@github.com:cms-legacydata-analyses/DisplacedVertexAnalysis.git
+git clone git@github.com:cms-legacydata-analyses/LongLivedNeutralParticlesAnalysis.git
 ```
 Next set up CMS environment and compile the code
 
@@ -28,4 +28,4 @@ cmsRun simuelectronanalyzer_cfg.py
 ```
 The output file will be named `simu_electron.root` (For the other cases: `muon.root`, `electron.root` and `simu_muon.root`).
 ## Creating Plots
-The ploting scripts are located under `CMSSW_5_3_32/src/()/Plots`
+The ploting scripts are located under `CMSSW_5_3_32/src/LongLivedNeutralParticlesAnalysis/Plots`
