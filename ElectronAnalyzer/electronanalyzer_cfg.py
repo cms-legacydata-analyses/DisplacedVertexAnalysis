@@ -16,15 +16,10 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 
 
-#from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag,'FT_53_LV5_AN1::All', '')
-
-
 
 process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/FT_53_LV5_AN1_RUNA.db')
-#process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/START53_LV6A1.db')
 process.GlobalTag.globaltag = 'FT_53_LV5_AN1::All'
-#process.GlobalTag.globaltag = 'START53_LV6A1::All'
+
 
 
 myfilelist = cms.untracked.vstring()
@@ -2897,7 +2892,7 @@ myfilelist.extend(['root://eospublic.cern.ch//eos/opendata/cms/Run2011A/Photon/A
 
 
 process.source = cms.Source("PoolSource",
-    # replace 'myfile.root' with the source file you want to use
+    
     fileNames = myfilelist
 )
 
@@ -2911,14 +2906,4 @@ process.demo = cms.EDAnalyzer('ElectronAnalyzer'
                               triggerEvent   = cms.InputTag("hltTriggerSummaryAOD","","HLT")        
 )
 
-#process.gettriggerinfo = cms.EDAnalyzer('TriggerInfoAnalyzer',
-#                              processName = cms.string("HLT"),
-#                              triggerName = cms.string("@"),         
-#                              datasetName = cms.string("SingleMu"),           
-#                              triggerResults = cms.InputTag("TriggerResults","","HLT"),
-#                              triggerEvent   = cms.InputTag("hltTriggerSummaryAOD","","HLT")                             
-#                              )
-
-
-#process.triggerinfo = cms.Path(process.gettriggerinfo)
 process.p = cms.Path(process.demo)

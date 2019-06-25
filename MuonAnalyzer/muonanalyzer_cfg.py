@@ -16,15 +16,12 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 
 
-#from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag,'FT_53_LV5_AN1::All', '')
-
 
 
 process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/FT_53_LV5_AN1_RUNA.db')
-#process.GlobalTag.connect = cms.string('sqlite_file:/cvmfs/cms-opendata-conddb.cern.ch/START53_LV6A1.db')
+
 process.GlobalTag.globaltag = 'FT_53_LV5_AN1::All'
-#process.GlobalTag.globaltag = 'START53_LV6A1::All'
+
 
 myfilelist = cms.untracked.vstring()
 myfilelist.extend( ['root://eospublic.cern.ch//eos/opendata/cms/Run2011A/DoubleMu/AOD/12Oct2013-v1/10000/000D143E-9535-E311-B88B-002618943934.root',
@@ -1407,7 +1404,7 @@ myfilelist.extend( ['root://eospublic.cern.ch//eos/opendata/cms/Run2011A/DoubleM
 'root://eospublic.cern.ch//eos/opendata/cms/Run2011A/DoubleMu/AOD/12Oct2013-v1/20000/FE01237D-043F-E311-8673-003048B835A2.root'
 ])
 process.source = cms.Source("PoolSource",
-    # replace 'myfile.root' with the source file you want to use
+   
     fileNames = myfilelist
 )
 
