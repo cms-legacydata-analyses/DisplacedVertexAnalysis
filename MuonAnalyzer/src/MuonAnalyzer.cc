@@ -368,11 +368,10 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 			   
 			   double cosAlpha = mCos(itTrack1->phi(), itTrack1->eta(), itTrack2->phi(), itTrack2->eta());
 			   double theta = mTheta(itTrack1->px()+itTrack2->px(), itTrack1->py()+itTrack2->py(),secVert_x -vertex_x,  secVert_y-vertex_y);
-			   double px = itTrack1->px() + itTrack2->px();
-			   double py = itTrack1->py() + itTrack2->py();
-			   double pt = sqrt(px*px + py*py);
 			   
-			    bool IPC = impactParameterCut(itTrack1, itTrack2, beamSpot);
+			  
+			   
+			    
 					    //double IPC = impactParameterCut(itTrack1, itTrack2, beamSpot);
 			    double secVertErrx = myVertex.positionError().cxx();
 			    double secVertErry = myVertex.positionError().cyy();
@@ -387,11 +386,7 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 				double tot_variance = difx*difx*tdl_errx +dify*dify*tdl_erry; 
 				double tdl_err = sqrt(tot_variance);
 				double invariantMass;
-				
-			 
-			  double dot;
-			  dot = dotProduct(secVert_x-vertex_x, secVert_y-vertex_y, itTrack1->px()+itTrack2->px(),itTrack1->py()+itTrack2->py());
-			  invariantMass = invMass(itTrack1->px(), itTrack1->py(), itTrack1->pz(),itTrack2->px(), itTrack2->py(), itTrack2->pz());
+			    invariantMass = invMass(itTrack1->px(), itTrack1->py(), itTrack1->pz(),itTrack2->px(), itTrack2->py(), itTrack2->pz());
 			  //cout<<theta<<endl;
 			 
 			  
@@ -420,8 +415,8 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 					
 					{
 				
-					   double invariantMass;
-					   invariantMass = invMass(itTrack1->px(), itTrack1->py(), itTrack1->pz(),itTrack2->px(), itTrack2->py(), itTrack2->pz());
+					   //double invariantMass;
+					   //invariantMass = invMass(itTrack1->px(), itTrack1->py(), itTrack1->pz(),itTrack2->px(), itTrack2->py(), itTrack2->pz());
 					   
 				   }
 			   
