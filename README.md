@@ -26,6 +26,10 @@ The analysis code is divided into four modules, corresponding to the diferent op
 cd SimuElectronAnalyzer
 cmsRun simuelectronanalyzer_cfg.py
 ```
-The output file will be named `simu_electron.root` (For the other cases: `muon.root`, `electron.root` and `simu_muon.root`).
+The output file will be named `<process>_electron.root` (For the other cases: `muon.root`, `electron.root` and `<process>_muon.root`).
 ## Creating Plots
-The ploting scripts are located under `CMSSW_5_3_32/src/LongLivedNeutralParticlesAnalysis/Plots`
+The ploting scripts are located under `CMSSW_5_3_32/src/LongLivedNeutralParticlesAnalysis/Plots`. To create the plots move the root files of into that directory and run the ploting scripts by opening root and executing them. 
+```
+root -l
+.x plot.cxx
+```
