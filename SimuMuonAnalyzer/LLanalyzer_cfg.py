@@ -48,7 +48,7 @@ process.source = cms.Source("PoolSource",
 
 process.demo = cms.EDAnalyzer('SimuMuonAnalyzer'
     , tracks = cms.untracked.InputTag('generalTracks'),
-      outFile = cms.string("file:simumuon.root")
+      outFile = cms.string("file:LL_muon.root")
 )
 
 
