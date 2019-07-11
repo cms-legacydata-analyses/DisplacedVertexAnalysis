@@ -1410,7 +1410,12 @@ process.source = cms.Source("PoolSource",
 
 process.demo = cms.EDAnalyzer('MuonAnalyzer'
     , tracks = cms.untracked.InputTag('generalTracks'),
-      outFile = cms.string("file:muon.root")
+      outFile = cms.string("file:muon.root"),
+      processName = cms.string("HLT"),
+                              triggerName = cms.string("@"),         
+                              datasetName = cms.string("SingleMu"),           
+                              triggerResults = cms.InputTag("TriggerResults","","HLT"),
+                              triggerEvent   = cms.InputTag("hltTriggerSummaryAOD","","HLT")  
 )
 
 

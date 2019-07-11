@@ -91,29 +91,18 @@ class SimuMuonAnalyzer : public edm::EDAnalyzer {
      double invMass(double , double , double , double  , double ,  double );
      double dotProduct(double , double , double , double );
      bool impactParameterCut(reco::TrackCollection::const_iterator, reco::TrackCollection::const_iterator, reco::BeamSpot );
-   //   TTree * mtree;
+   
       TFile * mfile;
-     // TH1F * h_;
-     
       TH1F * h_invMass;
       TH1F * h_invMassLoose;
-      
-  
       TH1F * h_lxy_err;
-      
-      
-  
       TH1F * nEvents;
-      
-      
+     
       int vuelta;
       int NvertTracks = 0, Ntracks = 0;
       int numJets2 = 0;
       double dotMax = 0;
       double dotMin = 0;
-		 
-    
-		 
 
       // ----------member data ---------------------------
       edm::InputTag trackTags_; //used to select what tracks to read from configuration file
@@ -162,6 +151,7 @@ SimuMuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
    using namespace edm;
    using namespace reco;
    using namespace std;
+   
 nEvents->Fill(1); 
 Handle<TrackCollection> tracks;
 iEvent.getByLabel(trackTags_,tracks);
@@ -174,7 +164,6 @@ const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);
 
 Handle<GenParticleCollection> genParticles;
 iEvent.getByLabel("genParticles", genParticles);
-
 
 //data process=HLT, MC depends, Spring11 is REDIGI311X
 edm::Handle<trigger::TriggerEvent> trigEvent; 
@@ -256,17 +245,11 @@ else
 	cout<<"trigger Not found"<<endl;
 }
 
-//cout<<filterName<<endl;
-
-
 bool passTrig;
 int trigIndex = trigNames.triggerIndex(pathName);
 if (trigIndex != trigPathSize)
 {
     passTrig=trigResults->accept(trigNames.triggerIndex(pathName));   // may cause vector::_M_range_check exeption
-    
-    //event.triggerActivated = passTrig;
-    //cout<<"was trigger activated: "<<(int)passTrig<<endl;
 }
 else
 {
@@ -290,14 +273,7 @@ trigger::size_type e_filterIndex = trigEvent->filterIndex(edm::InputTag(e_filter
  if(e_filterIndex<trigEvent->sizeFilters())
  { 
 	  
-	 
-      //const trigger::Keys& trigKeys = trigEvent->filterKeys(e_filterIndex); 
-      
-      //const trigger::TriggerObjectCollection & e_trigObjColl(trigEvent->getObjects());
-     
-     
-
-if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
+if ((standardCuts && passTrig && beamSpotHandle.isValid()))
 {
  int j = 0;
  for(TrackCollection::const_iterator itTrack = tracks->begin();
@@ -315,15 +291,14 @@ if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
 		  
 		   if (lepMatchCut)
 		   { 
-			    if(deltaR(itTrack->phi(), itTrack->eta(), p.phi(), p.eta())< 0.1  )
+			    if(deltaR(itTrack->phi(), itTrack->eta(), p.phi(), p.eta())< 0.1 )
 			   {  
 				   matchedTrack[j] = 1;
 				   
 			      
 			   }
 			   
-		   } 
-			  
+		   } 	  
 		  }
 	  }
 		  j++;
@@ -347,7 +322,7 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
        itTrack2 != tracks->end();                      
        ++itTrack2) 
        {
-		   if(itTrack2->charge() ==-1 && matchedTrack[j] ==1   && deltaR(itTrack1->phi(), itTrack1->eta(), itTrack2->phi(), itTrack2->eta())> 0.2 )
+		   if(itTrack2->charge() ==-1 && matchedTrack[j] ==1  && deltaR(itTrack1->phi(), itTrack1->eta(), itTrack2->phi(), itTrack2->eta())> 0.2 )
 		   {  
 			   
  // Secondary vertex is reconstructed
