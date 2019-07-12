@@ -3,7 +3,7 @@
 // Package:    MuonAnalyzer
 // Class:      MuonAnalyzer
 // 
-/**\class MuonAnalyzer MuonAnalyzer.cc Ntuple/MuonAnalyzer/src/MuonAnalyzer.cc
+/**\class MuonAnalyzer MuonAnalyzer.cc LongLivedNeutralParticlesAnalysis/MuonAnalyzer/src/MuonAnalyzer.cc
 
  Description: [one line class summary]
 
@@ -99,11 +99,8 @@ class MuonAnalyzer : public edm::EDAnalyzer {
       TH1F * nEvents;
       
       
-      int vuelta;
-      int NvertTracks = 0, Ntracks = 0;
-      int numJets2 = 0;
-      double dotMax = 0;
-      double dotMin = 0;
+     
+   
     
 		 
 
@@ -454,7 +451,7 @@ i++;
 void 
 MuonAnalyzer::beginJob()
 {TH1::AddDirectory(true);
- vuelta = 0;
+
  const char* of = outFile_.c_str();
  mfile = new TFile(of, "recreate");
  
@@ -483,8 +480,7 @@ using namespace std;
 mfile->Write();
 mfile->Close();
 
-cout<<"dot max "<<dotMax<<endl;
-cout<<"dot min "<<dotMin<<endl;
+
 }
 
 

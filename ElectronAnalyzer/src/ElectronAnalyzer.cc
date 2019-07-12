@@ -3,7 +3,7 @@
 // Package:    ElectronAnalyzer
 // Class:      ElectronAnalyzer
 // 
-/**\class ElectronAnalyzer ElectronAnalyzer.cc Ntuple/ElectronAnalyzer/src/ElectronAnalyzer.cc
+/**\class ElectronAnalyzer ElectronAnalyzer.cc LongLivedNeutralParticlesAnalysis/ElectronAnalyzer/src/ElectronAnalyzer.cc
 
  Description: [one line class summary]
 
@@ -50,16 +50,12 @@
 #include "DataFormats/JetReco/interface/PFJetCollection.h"
 #include "DataFormats/JetReco/interface/Jet.h"
 #include "DataFormats/JetReco/interface/PFJet.h"
-
-
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
-
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/TrackReco/interface/Track.h"
-
 #include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
@@ -95,44 +91,25 @@ class ElectronAnalyzer : public edm::EDAnalyzer {
      double invMass(double , double , double , double  , double ,  double );
      double dotProduct(double , double , double , double );
      bool impactParameterCut(reco::TrackCollection::const_iterator, reco::TrackCollection::const_iterator, reco::BeamSpot );
-   //   TTree * mtree;
-      TFile * mfile;
-     // TH1F * h_;
+  
+      TFile * mfile;   
       TH1F * h_invMass;
       TH1F * h_invMassLoose;
       TH1F * h_lxy_err;
       TH1F * h_lxy;
-     
-      
-      
-       
-
-
-
-
-      
-      TH1F * h_pt;
-      TH1F * h_ptP;
-      TH1F * h_ptM;
       TH1F * nEvents;
-      
-      int vuelta;
-      int NvertTracks = 0, Ntracks = 0;
-      int numJets2 = 0;
-      double dotMax = 0;
-      double dotMin = 0;
-    
+     
 	  HLTConfigProvider hltConfig_;
 
       // ----------member data ---------------------------
      
-        std::string   processName_;
+      std::string   processName_;
       std::string   triggerName_;
       std::string   datasetName_;
       edm::InputTag triggerResultsTag_;
       edm::InputTag triggerEventTag_;
-       edm::InputTag trackTags_; //used to select what tracks to read from configuration file
-       std::string  outFile_;
+      edm::InputTag trackTags_; //used to select what tracks to read from configuration file
+      std::string  outFile_;
 };
 
 //
@@ -155,7 +132,7 @@ datasetName_(iConfig.getParameter<std::string>("datasetName")),
 triggerResultsTag_(iConfig.getParameter<edm::InputTag>("triggerResults")),
 triggerEventTag_(iConfig.getParameter<edm::InputTag>("triggerEvent")),
 trackTags_(iConfig.getUntrackedParameter<edm::InputTag>("tracks")),
- outFile_(iConfig.getParameter<std::string>("outFile"))
+outFile_(iConfig.getParameter<std::string>("outFile"))
 {
    //now do what ever initialization is needed
 
@@ -184,9 +161,17 @@ ElectronAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
    using namespace std;
 
 Handle<TrackCollection> tracks;
+Handle<edm::TriggerResults> trigResults; 
+Handle<trigger::TriggerEvent> trigEvent; 
+Handle<reco::VertexCollection> vertHand;
+Handle<reco::BeamSpot> beamSpotHandle;
+Handle<reco::TrackCollection> tks;
+ESHandle<TransientTrackBuilder> theB;
+
+
 iEvent.getByLabel(trackTags_,tracks);
 nEvents->Fill(1); 
-edm::Handle<edm::TriggerResults> trigResults; 
+
 edm::InputTag trigResultsTag("TriggerResults","","HLT");
 edm::InputTag trigEventTag("hltTriggerSummaryAOD","","HLT");
 iEvent.getByLabel(trigResultsTag,trigResults);
@@ -194,11 +179,11 @@ const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);
 
 
 //data process=HLT, MC depends, Spring11 is REDIGI311X
-edm::Handle<trigger::TriggerEvent> trigEvent; 
+
 iEvent.getByLabel(trigEventTag,trigEvent);
 
 // get primary vertex coordinates
-Handle<reco::VertexCollection> vertHand;
+
    iEvent.getByLabel( "offlinePrimaryVertices",vertHand);
 double vertex_x=0, vertex_y=0, vertex_xError=0, vertex_yError=0;
  for(reco::VertexCollection::const_iterator itVert = vertHand->begin();
@@ -213,7 +198,7 @@ double vertex_x=0, vertex_y=0, vertex_xError=0, vertex_yError=0;
 		   if (vertex_x && vertex_y){}
 	   }
  reco::BeamSpot beamSpot;
-edm::Handle<reco::BeamSpot> beamSpotHandle;
+
 iEvent.getByLabel("offlineBeamSpot", beamSpotHandle);
 
 
@@ -350,9 +335,7 @@ if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
 		   { 
 			    if(deltaR(itTrack->phi(), itTrack->eta(), obj.phi(), obj.eta())< 0.1 )
 			   {  
-				   matchedTrack[i] = 1;
-				   
-			      
+				   matchedTrack[i] = 1;     
 			   }
 			   
 		   } 
@@ -360,9 +343,6 @@ if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
 		  }
 		  i++;
 	   }
-	
-	
-
 }
 }
 
@@ -384,11 +364,11 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 			   
  // Secondary vertex is reconstructed
 			   // get RECO tracks from the event
-					edm::Handle<reco::TrackCollection> tks;
+					
 					iEvent.getByLabel(trackTags_, tks);
                     KalmanVertexFitter fitter;
 					//get the builder:
-					edm::ESHandle<TransientTrackBuilder> theB;
+					
 					iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
 					//do the conversion:
 					std::vector<reco::TransientTrack> t_tks = (*theB).build(tks);
@@ -434,47 +414,22 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 				double tot_variance = difx*difx*tdl_errx +dify*dify*tdl_erry; 
 				double tdl_err = sqrt(tot_variance);
 				double invariantMass;
-			  // cout<<conePt_var<<cosAlpha<<vertex_x<<vertex_y<<theta<<endl;
-			 /* cout<<"theta: "<<theta*180/3.1415<<endl;
-			  cout<<"disp "<<secVert_x -beamX<<endl;
-			  cout<<"beam "<<beamX<<endl;
-			  cout<<"secVert "<<secVert_x<<endl;*/
-			  double dot;
-			  dot = dotProduct(secVert_x-vertex_x, secVert_y-vertex_y, itTrack1->px()+itTrack2->px(),itTrack1->py()+itTrack2->py());
-			  invariantMass = invMass(itTrack1->px(), itTrack1->py(), itTrack1->pz(),itTrack2->px(), itTrack2->py(), itTrack2->pz());
-			  //cout<<theta<<endl;
-			 
-			 
-			  
-			  
-			  
-			  					  
 			
-			  
-			  
+			 
+			  invariantMass = invMass(itTrack1->px(), itTrack1->py(), itTrack1->pz(),itTrack2->px(), itTrack2->py(), itTrack2->pz());
+			 
 			  h_invMassLoose->Fill(invariantMass);
 			   if ((conePt_var < 4  && (theta < 0.8 )))
 					
 					{
-					   
-						//cout<< tdl_err<<endl;
-				     //without lifetime related cuts
-						
-						
-						if(dot> dotMax){dotMax=dot;}
-						if (dot< dotMin){dotMin=dot;}
-						
-					    
-					     
+			    
 				         h_invMass->Fill(invariantMass, prescale);
-				        
-						 
-						 
-						
-						 
+	 
 				         double lxy_err = tdl/(tdl_err);
 				         if (lxy_err > 20)
-				         {lxy_err = 19;}
+				         {
+							 lxy_err = 19;
+					     }
 				         h_lxy_err->Fill(lxy_err, prescale);
 				         
 				    //with lifetime related cuts
@@ -529,7 +484,7 @@ i++;
 void 
 ElectronAnalyzer::beginJob()
 {TH1::AddDirectory(true);
- vuelta = 0;
+
  const char* of = outFile_.c_str();
  mfile = new TFile(of, "recreate");
  
