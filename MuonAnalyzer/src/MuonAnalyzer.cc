@@ -27,7 +27,6 @@
 #include "vector"
 #include "algorithm"
 #include <TH1.h>
-#include <TH2.h>
 #include <TFile.h>
 #include <TTree.h>
 #include <TROOT.h>
@@ -99,14 +98,19 @@ class MuonAnalyzer : public edm::EDAnalyzer {
       TH1F * nEvents;
       
       
-     
+      std::string   processName_;
+      std::string   triggerName_;
+      std::string   datasetName_;
+      edm::InputTag triggerResultsTag_;
+      edm::InputTag triggerEventTag_;
+      edm::InputTag trackTags_; //used to select what tracks to read from configuration file
+      std::string  outFile_;
    
     
 		 
 
       // ----------member data ---------------------------
-      edm::InputTag trackTags_; //used to select what tracks to read from configuration file
-       std::string  outFile_;
+   
 };
 
 //
@@ -122,9 +126,15 @@ class MuonAnalyzer : public edm::EDAnalyzer {
 //
 MuonAnalyzer::MuonAnalyzer(const edm::ParameterSet& iConfig)
 :
- trackTags_(iConfig.getUntrackedParameter<edm::InputTag>("tracks")),
- outFile_(iConfig.getParameter<std::string>("outFile"))
 
+
+processName_(iConfig.getParameter<std::string>("processName")),
+triggerName_(iConfig.getParameter<std::string>("triggerName")),
+datasetName_(iConfig.getParameter<std::string>("datasetName")),
+triggerResultsTag_(iConfig.getParameter<edm::InputTag>("triggerResults")),
+triggerEventTag_(iConfig.getParameter<edm::InputTag>("triggerEvent")),
+trackTags_(iConfig.getUntrackedParameter<edm::InputTag>("tracks")),
+outFile_(iConfig.getParameter<std::string>("outFile"))
 {
    //now do what ever initialization is needed
 
