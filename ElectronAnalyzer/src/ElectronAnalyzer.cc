@@ -177,6 +177,9 @@ ESHandle<TransientTrackBuilder> theB;
 edm::InputTag trigResultsTag("TriggerResults","","HLT");
 edm::InputTag trigEventTag("hltTriggerSummaryAOD","","HLT");
 
+/*** Here the handlers are filled with the corresponding object
+ * found in the AOD files
+ * **/
 
 iEvent.getByLabel(trackTags_,tracks);
 iEvent.getByLabel(trigResultsTag,trigResults);
@@ -187,14 +190,10 @@ iEvent.getByLabel(trackTags_, tks);
 
 const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);
 
-nEvents->Fill(1); 
-//data process=HLT, MC depends, Spring11 is REDIGI311X
-
-
+nEvents->Fill(1); //The total number of events will be used to normalize histograms.
 
 // get primary vertex coordinates
-
-   
+bool primaryVertexFound = false;
 double vertex_x=0, vertex_y=0, vertex_xError=0, vertex_yError=0;
  for(reco::VertexCollection::const_iterator itVert = vertHand->begin();
        itVert != vertHand->begin()+1&& itVert != vertHand->end();
@@ -205,7 +204,10 @@ double vertex_x=0, vertex_y=0, vertex_xError=0, vertex_yError=0;
 		   vertex_xError=itVert->xError();
 		   vertex_yError=itVert->yError();
 		   
-		   if (vertex_x && vertex_y){}
+		  //  if (vertex_xError && vertex_yError){primaryVertexFound = true;} //variable needs to be used for compilation
+		  
+		
+			 
 	   }
  reco::BeamSpot beamSpot;
 
@@ -291,7 +293,7 @@ else
 
 bool passTrig;
 int trigIndex = trigNames.triggerIndex(pathName);
-if (trigIndex != trigPathSize)
+if (trigIndex != trigPathSize && primaryVertexFound)
 {
     passTrig=trigResults->accept(trigNames.triggerIndex(pathName));   // may cause vector::_M_range_check exeption
     
