@@ -160,6 +160,12 @@ ElectronAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
    using namespace reco;
    using namespace std;
 
+
+/***
+ * Here the handlers for the various objects that will be
+ * used in the analysis are initialized. These correspond to:
+ * traks, triggers,trigger results, verteces and beamspot objects.
+ * **/
 Handle<TrackCollection> tracks;
 Handle<edm::TriggerResults> trigResults; 
 Handle<trigger::TriggerEvent> trigEvent; 
@@ -168,23 +174,27 @@ Handle<reco::BeamSpot> beamSpotHandle;
 Handle<reco::TrackCollection> tks;
 ESHandle<TransientTrackBuilder> theB;
 
-
-iEvent.getByLabel(trackTags_,tracks);
-nEvents->Fill(1); 
-
 edm::InputTag trigResultsTag("TriggerResults","","HLT");
 edm::InputTag trigEventTag("hltTriggerSummaryAOD","","HLT");
+
+
+iEvent.getByLabel(trackTags_,tracks);
 iEvent.getByLabel(trigResultsTag,trigResults);
+iEvent.getByLabel(trigEventTag,trigEvent);
+iEvent.getByLabel( "offlinePrimaryVertices",vertHand);
+iEvent.getByLabel("offlineBeamSpot", beamSpotHandle);
+iEvent.getByLabel(trackTags_, tks);
+
 const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);
 
-
+nEvents->Fill(1); 
 //data process=HLT, MC depends, Spring11 is REDIGI311X
 
-iEvent.getByLabel(trigEventTag,trigEvent);
+
 
 // get primary vertex coordinates
 
-   iEvent.getByLabel( "offlinePrimaryVertices",vertHand);
+   
 double vertex_x=0, vertex_y=0, vertex_xError=0, vertex_yError=0;
  for(reco::VertexCollection::const_iterator itVert = vertHand->begin();
        itVert != vertHand->begin()+1&& itVert != vertHand->end();
@@ -199,7 +209,7 @@ double vertex_x=0, vertex_y=0, vertex_xError=0, vertex_yError=0;
 	   }
  reco::BeamSpot beamSpot;
 
-iEvent.getByLabel("offlineBeamSpot", beamSpotHandle);
+
 
 
 double beamX = 0;
@@ -365,7 +375,7 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
  // Secondary vertex is reconstructed
 			   // get RECO tracks from the event
 					
-					iEvent.getByLabel(trackTags_, tks);
+					
                     KalmanVertexFitter fitter;
 					//get the builder:
 					
