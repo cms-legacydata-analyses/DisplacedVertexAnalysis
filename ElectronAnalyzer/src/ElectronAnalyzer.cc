@@ -203,17 +203,10 @@ double vertex_x=0, vertex_y=0, vertex_xError=0, vertex_yError=0;
 		   vertex_y = itVert->y();
 		   vertex_xError=itVert->xError();
 		   vertex_yError=itVert->yError();
-		   
-		  //  if (vertex_xError && vertex_yError){primaryVertexFound = true;} //variable needs to be used for compilation
-		  
-		
 			 
 	   }
  reco::BeamSpot beamSpot;
-
-
-
-
+// get beamspot coordinates
 double beamX = 0;
 double beamY = 0;
 double beamXErr = 0;
@@ -230,13 +223,16 @@ if ( beamSpotHandle.isValid() )
  
  
 std::string pathName = "none";
-std::string toFind[4] = {"HLT_DoublePhoton33_v","HLT_DoublePhoton33_HEVT", "HLT_DoublePhoton38_HEVT", "none"};
 
 
-   
+std::string toFind[4] = {"HLT_DoublePhoton33_v","HLT_DoublePhoton33_HEVT", "HLT_DoublePhoton38_HEVT"};
+/*** Photon AOD files (used for the electron analysis part) may have any of the above triggers.
+ * They may also differ from file to file. In the loop below we chech which one it is.
+ * **/
+
 int trigPathSize = trigNames.size();
-int triggerFound=9;
-for(int j = 0; j < 5; j++){
+int triggerFound=9999;
+for(int j = 0; j < 4; j++){
 for (unsigned int i = 0; i< trigNames.size(); i++)
 {
 	
@@ -248,33 +244,18 @@ for (unsigned int i = 0; i< trigNames.size(); i++)
 		triggerFound=j;
 		pathName = trig;
 		i = trigNames.size();
-		j = 5;
+		j = 4;
 		
 		}
 		
 	}
 }
+
 
 std::string filterName = "none";
 std::cout<<"path name: "<<pathName<<endl; 
 std::cout<<"prescale "<<hltConfig_.prescaleValue(iEvent,iSetup,pathName)<<std::endl;
-int prescale = hltConfig_.prescaleValue(iEvent,iSetup,pathName) ;
-// find lowest trigger prescale from  of all activated triggers
 
-
-
-for (unsigned int i = 0; i< trigNames.size(); i++)
-{
-	std::string trig = trigNames.triggerName(i);
-	
-	if (trigResults->accept(trigNames.triggerIndex(trig)))
-	{
-		if (prescale > (int)hltConfig_.prescaleValue(iEvent,iSetup,trig))
-		{
-			prescale = hltConfig_.prescaleValue(iEvent,iSetup,trig);
-		}
-	}
-}
 //cout<<filterName<<endl;
 
 if (triggerFound == 0)
@@ -289,7 +270,22 @@ else
 {
 	filterName = "hltDoubleEG38HEVTDoubleFilter";
 }
+int prescale = hltConfig_.prescaleValue(iEvent,iSetup,pathName) ;
 
+
+// find lowest trigger prescale from  of all activated triggers. Will be used for weighting
+for (unsigned int i = 0; i< trigNames.size(); i++)
+{
+	std::string trig = trigNames.triggerName(i);
+	
+	if (trigResults->accept(trigNames.triggerIndex(trig)))
+	{
+		if (prescale > (int)hltConfig_.prescaleValue(iEvent,iSetup,trig))
+		{
+			prescale = hltConfig_.prescaleValue(iEvent,iSetup,trig);
+		}
+	}
+}
 
 bool passTrig;
 int trigIndex = trigNames.triggerIndex(pathName);
