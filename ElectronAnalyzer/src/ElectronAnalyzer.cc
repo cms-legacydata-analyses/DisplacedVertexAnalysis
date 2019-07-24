@@ -226,8 +226,8 @@ std::string pathName = "none";
 
 
 std::string toFind[4] = {"HLT_DoublePhoton33_v","HLT_DoublePhoton33_HEVT", "HLT_DoublePhoton38_HEVT"};
-/*** Photon AOD files (used for the electron analysis part) may have any of the above triggers.
- * They may also differ from file to file. In the loop below we chech which one it is.
+/*** Photon AOD files (used for the electron analysis part) may have any of the above triggers
+ * and may also differ from file to file. In the loop below we chech which one it is.
  * **/
 
 int trigPathSize = trigNames.size();
@@ -251,12 +251,7 @@ for (unsigned int i = 0; i< trigNames.size(); i++)
 	}
 }
 
-
 std::string filterName = "none";
-std::cout<<"path name: "<<pathName<<endl; 
-std::cout<<"prescale "<<hltConfig_.prescaleValue(iEvent,iSetup,pathName)<<std::endl;
-
-//cout<<filterName<<endl;
 
 if (triggerFound == 0)
 {
@@ -272,7 +267,6 @@ else
 }
 int prescale = hltConfig_.prescaleValue(iEvent,iSetup,pathName) ;
 
-
 // find lowest trigger prescale from  of all activated triggers. Will be used for weighting
 for (unsigned int i = 0; i< trigNames.size(); i++)
 {
@@ -287,21 +281,21 @@ for (unsigned int i = 0; i< trigNames.size(); i++)
 	}
 }
 
+
+//Check if DoublePhoton trigger has activated
 bool passTrig;
 int trigIndex = trigNames.triggerIndex(pathName);
 if (trigIndex != trigPathSize && primaryVertexFound)
 {
     passTrig=trigResults->accept(trigNames.triggerIndex(pathName));   // may cause vector::_M_range_check exeption
     
-    //event.triggerActivated = passTrig;
-    //cout<<"was trigger activated: "<<(int)passTrig<<endl;
 }
 else
 {
 	passTrig=false;
 }
    
-bool standardCuts = cmsStandardCuts(iEvent, iSetup);
+bool standardCuts = cmsStandardCuts(iEvent, iSetup); //cmsStandardCuts() definition at line 525
 
 
 int matchedTrack[tracks->size()];
@@ -309,8 +303,8 @@ for (int i = 0; i<(int)tracks->size(); i++)
 {
 	matchedTrack[i] = 0;
 }
-//cout<<matchedTrack[0]<<endl;
-std::string e_filterName(filterName); // dataset photones (para filtrar electrones)
+
+std::string e_filterName(filterName);
    
 
 trigger::size_type e_filterIndex = trigEvent->filterIndex(edm::InputTag(e_filterName,"",trigEventTag.process())); 
@@ -396,19 +390,12 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 				  
               if (myVertex.isValid() && myVertex.normalisedChiSquared() < 5)
 					 {
-			   double secVert_x =(double)myVertex.position().x();
-			   double secVert_y =(double)myVertex.position().y();
-			   //cout<<secVert_x<<secVert_y<<endl;
-			   double conePt_var=conePt(i , j, itTrack1->eta(), itTrack1->phi(),  tracks->size(), iEvent,iSetup);
-			   
-			   //double cosAlpha = mCos(itTrack1->phi(), itTrack1->eta(), itTrack2->phi(), itTrack2->eta());
-			   double theta = mTheta(itTrack1->px()+itTrack2->px(), itTrack1->py()+itTrack2->py(),secVert_x -vertex_x,  secVert_y-vertex_y);
-			  // double px = itTrack1->px() + itTrack2->px();
-			   //double py = itTrack1->py() + itTrack2->py();
-			   //double pt = sqrt(px*px + py*py);
-			   
+			    double secVert_x =(double)myVertex.position().x();
+			    double secVert_y =(double)myVertex.position().y();
+			    double conePt_var=conePt(i , j, itTrack1->eta(), itTrack1->phi(),  tracks->size(), iEvent,iSetup);
+			    //double cosAlpha = mCos(itTrack1->phi(), itTrack1->eta(), itTrack2->phi(), itTrack2->eta());
+			    double theta = mTheta(itTrack1->px()+itTrack2->px(), itTrack1->py()+itTrack2->py(),secVert_x -vertex_x,  secVert_y-vertex_y);
 			    bool IPC = impactParameterCut(itTrack1, itTrack2, beamSpot);
-					    //double IPC = impactParameterCut(itTrack1, itTrack2, beamSpot);
 			    double secVertErrx = myVertex.positionError().cxx();
 			    double secVertErry = myVertex.positionError().cyy();
 				double tdl_x = secVert_x - vertex_x;
@@ -416,18 +403,17 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 				double tdl = sqrt(tdl_x*tdl_x + tdl_y*tdl_y);
 				double tdl_errx = secVertErrx + vertex_xError;
 				double tdl_erry = secVertErry + vertex_yError;
-						//double tdl_err = sqrt(tdl_errx*tdl_errx + tdl_erry*tdl_erry);
+				//double tdl_err = sqrt(tdl_errx*tdl_errx + tdl_erry*tdl_erry);
 				double difx = (secVert_x)/(sqrt((secVert_x*secVert_x)+(secVert_y*secVert_y)));
 				double dify = (secVert_y)/(sqrt((secVert_x*secVert_x)+(secVert_y*secVert_y)));
 				double tot_variance = difx*difx*tdl_errx +dify*dify*tdl_erry; 
 				double tdl_err = sqrt(tot_variance);
 				double invariantMass;
-			
-			 
-			  invariantMass = invMass(itTrack1->px(), itTrack1->py(), itTrack1->pz(),itTrack2->px(), itTrack2->py(), itTrack2->pz());
-			 
-			  h_invMassLoose->Fill(invariantMass);
-			   if ((conePt_var < 4  && (theta < 0.8 )))
+	
+			    invariantMass = invMass(itTrack1->px(), itTrack1->py(), itTrack1->pz(),itTrack2->px(), itTrack2->py(), itTrack2->pz());
+			    h_invMassLoose->Fill(invariantMass);
+			    
+			    if ((conePt_var < 4  && (theta < 0.8 )))
 					
 					{
 			    
