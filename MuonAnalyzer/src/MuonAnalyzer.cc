@@ -161,11 +161,20 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    using namespace edm;
    using namespace reco;
    using namespace std;
-nEvents->Fill(1); 
+
+Handle<edm::TriggerResults> trigResults; 
 Handle<TrackCollection> tracks;
+Handle<trigger::TriggerEvent> trigEvent;
+Handle<reco::VertexCollection> vertHand;
+Handle<reco::BeamSpot> beamSpotHandle;
+Handle<reco::TrackCollection> tks;
+ESHandle<TransientTrackBuilder> theB;
+
+nEvents->Fill(1); 
+
 iEvent.getByLabel(trackTags_,tracks);
    
-edm::Handle<edm::TriggerResults> trigResults; 
+
 edm::InputTag trigResultsTag("TriggerResults","","HLT");
 edm::InputTag trigEventTag("hltTriggerSummaryAOD","","HLT");
 iEvent.getByLabel(trigResultsTag,trigResults);
@@ -173,11 +182,11 @@ const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);
 
 
 //data process=HLT, MC depends, Spring11 is REDIGI311X
-edm::Handle<trigger::TriggerEvent> trigEvent; 
+ 
 iEvent.getByLabel(trigEventTag,trigEvent);
 
 // get primary vertex coordinates
-Handle<reco::VertexCollection> vertHand;
+
    iEvent.getByLabel( "offlinePrimaryVertices",vertHand);
 double vertex_x=0, vertex_y=0, vertex_xError=0, vertex_yError=0;
  for(reco::VertexCollection::const_iterator itVert = vertHand->begin();
@@ -192,7 +201,7 @@ double vertex_x=0, vertex_y=0, vertex_xError=0, vertex_yError=0;
 		   if (vertex_x && vertex_y){}
 	   }
  reco::BeamSpot beamSpot;
-edm::Handle<reco::BeamSpot> beamSpotHandle;
+
 iEvent.getByLabel("offlineBeamSpot", beamSpotHandle);
 
 
@@ -344,11 +353,11 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 			   
  // Secondary vertex is reconstructed
 			   // get RECO tracks from the event
-					edm::Handle<reco::TrackCollection> tks;
+					
 					iEvent.getByLabel(trackTags_, tks);
                     KalmanVertexFitter fitter;
 					//get the builder:
-					edm::ESHandle<TransientTrackBuilder> theB;
+					
 					iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
 					//do the conversion:
 					std::vector<reco::TransientTrack> t_tks = (*theB).build(tks);

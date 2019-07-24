@@ -4,7 +4,7 @@ process = cms.Process("Demo")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 
 
@@ -23,7 +23,22 @@ process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
     fileNames = cms.untracked.vstring(
-'root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2011/Summer11LegDR/DYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola/AODSIM/PU_S13_START53_LV6-v1/00000/0A968A44-75BD-E311-8265-0025905A6094.root'
+'file:simu/LLelectron10.root',
+'file:simu/LLelectron11.root',
+'file:simu/LLelectron12.root',
+'file:simu/LLelectron13.root',
+'file:simu/LLelectron14.root',
+'file:simu/LLelectron15.root',
+'file:simu/LLelectron16.root',
+'file:simu/LLelectron1.root',
+'file:simu/LLelectron2.root',
+'file:simu/LLelectron3.root',
+'file:simu/LLelectron4.root',
+'file:simu/LLelectron5.root',
+'file:simu/LLelectron6.root',
+'file:simu/LLelectron7.root',
+'file:simu/LLelectron8.root',
+'file:simu/LLelectron9.root'
    )
 )
 
