@@ -227,7 +227,7 @@ std::string pathName = "none";
 
 std::string toFind[4] = {"HLT_DoublePhoton33_v","HLT_DoublePhoton33_HEVT", "HLT_DoublePhoton38_HEVT"};
 /*** Photon AOD files (used for the electron analysis part) may have any of the above triggers
- * and may also differ from file to file. In the loop below we chech which one it is.
+ * and may also differ from file to file. In the loop below we check which one it is.
  * **/
 
 int trigPathSize = trigNames.size();
@@ -250,20 +250,19 @@ for (unsigned int i = 0; i< trigNames.size(); i++)
 		
 	}
 }
-
-std::string filterName = "none";
-
-if (triggerFound == 0)
+/*** Here we check if the trigger was activated and store the result
+ * in the variable passTrig. This is a requirement for the analysis.
+ * ***/
+bool passTrig;
+int trigIndex = trigNames.triggerIndex(pathName);
+if (trigIndex != trigPathSize && primaryVertexFound)
 {
-	filterName = "hltDoublePhoton33EgammaLHEDoubleFilter";
+    passTrig=trigResults->accept(trigNames.triggerIndex(pathName));   // may cause vector::_M_range_check exeption
+    
 }
-else if (triggerFound == 1)
+else
 {
-	filterName = "hltDoubleEG33HEVTDoubleFilter";
-}
-else 
-{
-	filterName = "hltDoubleEG38HEVTDoubleFilter";
+	passTrig=false;
 }
 int prescale = hltConfig_.prescaleValue(iEvent,iSetup,pathName) ;
 
@@ -282,22 +281,39 @@ for (unsigned int i = 0; i< trigNames.size(); i++)
 }
 
 
-//Check if DoublePhoton trigger has activated
-bool passTrig;
-int trigIndex = trigNames.triggerIndex(pathName);
-if (trigIndex != trigPathSize && primaryVertexFound)
+
+/*** A trigger is composed of several ordered filters (can be thought of as sub triggers).
+ * If the last filter was activated that means the trigger was activated. Here the filter
+ * corresponding to the trigger found in the file is stored as a string in the variable filterName.
+ * It will be used later on to initialize a trigger object that will contain the information about
+ * the physical object that activated the trigger
+ * **/
+
+std::string filterName = "none";
+
+if (triggerFound == 0)
 {
-    passTrig=trigResults->accept(trigNames.triggerIndex(pathName));   // may cause vector::_M_range_check exeption
-    
+	filterName = "hltDoublePhoton33EgammaLHEDoubleFilter";
 }
-else
+else if (triggerFound == 1)
 {
-	passTrig=false;
+	filterName = "hltDoubleEG33HEVTDoubleFilter";
 }
-   
+else 
+{
+	filterName = "hltDoubleEG38HEVTDoubleFilter";
+}
+
+
+
+ 
 bool standardCuts = cmsStandardCuts(iEvent, iSetup); //cmsStandardCuts() definition at line 525
 
-
+/** the variable matchedTrack contains the 1s or 0s at the 
+ * position corresponding to the index of a track that either
+ * matched with a trigger or not correspondigly. Below the variabe
+ * is reset into a vector of 0s.
+ * **/
 int matchedTrack[tracks->size()];
 for (int i = 0; i<(int)tracks->size(); i++)
 {
@@ -305,20 +321,19 @@ for (int i = 0; i<(int)tracks->size(); i++)
 }
 
 std::string e_filterName(filterName);
-   
-
 trigger::size_type e_filterIndex = trigEvent->filterIndex(edm::InputTag(e_filterName,"",trigEventTag.process())); 
   
  if(e_filterIndex<trigEvent->sizeFilters())
  { 
-	  
-	 
-      const trigger::Keys& trigKeys = trigEvent->filterKeys(e_filterIndex); 
-      
+      const trigger::Keys& trigKeys = trigEvent->filterKeys(e_filterIndex);  
       const trigger::TriggerObjectCollection & e_trigObjColl(trigEvent->getObjects());
-     
-     
-  
+
+
+/** the analysis section of the code begins. First we check that the 
+ * standardCuts requirements are satisfied, that the double photon 
+ * trigger was activated and that a valid beamspot object was created
+ * int the event.
+ * **/     
 if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
 {
  int i = 0;
@@ -329,7 +344,7 @@ if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
 		  for(trigger::Keys::const_iterator keyIt=trigKeys.begin();keyIt!=trigKeys.end();++keyIt)
 		  {
 			   const trigger::TriggerObject& obj = e_trigObjColl[*keyIt];
-			  // cout<<obj.pt()<<endl;
+			 
 			   bool lepMatchCut =matchingCuts( itTrack->quality(reco::Track::highPurity)  , itTrack->pt() , itTrack->hitPattern().numberOfValidTrackerHits(),itTrack->hitPattern().numberOfValidPixelHits(), itTrack->eta(), itTrack->dxy(beamSpot), itTrack->dxyError());
 		
 		  
